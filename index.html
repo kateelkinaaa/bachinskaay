@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Где именно вы себя потеряли</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6f0;
+    --panel:#ffffff;
+    --panel-soft:#f6efe5;
+    --accent:#96603a;
+    --accent-soft:#c08b4e;
+    --accent-pale:rgba(150,96,58,.10);
+    --text:#2c2521;
+    --text-dim:#8a7c70;
+    --border:rgba(150,96,58,.22);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 700px 420px at 12% -8%, rgba(192,139,78,.16), transparent 62%),
+      radial-gradient(ellipse 520px 520px at 105% 12%, rgba(150,96,58,.10), transparent 58%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  .dust{
+    position:absolute;top:0;left:0;right:0;height:100%;min-height:100vh;
+    pointer-events:none;z-index:0;opacity:.55;
+    background-image:
+      radial-gradient(2px 2px at 14% 7%, rgba(150,96,58,.30), transparent),
+      radial-gradient(1.5px 1.5px at 30% 20%, rgba(150,96,58,.22), transparent),
+      radial-gradient(2px 2px at 78% 5%, rgba(192,139,78,.28), transparent),
+      radial-gradient(1.5px 1.5px at 93% 17%, rgba(150,96,58,.20), transparent),
+      radial-gradient(1.5px 1.5px at 7% 38%, rgba(150,96,58,.18), transparent),
+      radial-gradient(2px 2px at 62% 33%, rgba(192,139,78,.22), transparent),
+      radial-gradient(1.5px 1.5px at 38% 54%, rgba(150,96,58,.16), transparent),
+      radial-gradient(1.5px 1.5px at 87% 49%, rgba(150,96,58,.20), transparent),
+      radial-gradient(2px 2px at 22% 67%, rgba(192,139,78,.20), transparent),
+      radial-gradient(1.5px 1.5px at 67% 74%, rgba(150,96,58,.16), transparent),
+      radial-gradient(1.5px 1.5px at 94% 81%, rgba(150,96,58,.18), transparent),
+      radial-gradient(2px 2px at 33% 91%, rgba(192,139,78,.18), transparent);
+    background-repeat:repeat-y;
+    background-size:100% 900px;
+  }
+  .app{
+    position:relative;z-index:1;
+    width:100%;max-width:480px;
+    padding:26px 22px 40px;
+    display:flex;flex-direction:column;
+  }
+  .progress{display:flex;gap:5px;margin-bottom:26px;}
+  .progress i{flex:1;height:3px;border-radius:2px;background:rgba(150,96,58,.16);}
+  .progress i.done{background:var(--accent);}
+  .progress i.current{background:var(--accent-soft);}
+
+  .screen{display:none;flex-direction:column;flex:1;animation:fade .35s ease;}
+  .screen.active{display:flex;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;font-size:32px;line-height:1.2;
+    margin:0 0 18px;color:var(--text);letter-spacing:-.01em;
+  }
+  h1 em{font-style:italic;color:var(--accent);font-weight:600;}
+  h2{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;font-size:27px;line-height:1.28;margin:0 0 16px;
+  }
+  p{font-size:15.5px;line-height:1.65;color:var(--text);margin:0 0 14px;}
+  p.dim{color:var(--text-dim);}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 14px;border:1px solid var(--border);border-radius:999px;
+    font-size:11.5px;letter-spacing:.06em;color:var(--accent);
+    margin-bottom:18px;width:fit-content;background:var(--accent-pale);
+  }
+  .badge span.dot{width:4px;height:4px;border-radius:50%;background:var(--accent-soft);display:inline-block;}
+
+  .btn{
+    display:block;width:100%;text-align:center;
+    padding:16px 18px;border-radius:13px;
+    font-family:'Inter',sans-serif;font-size:15px;font-weight:500;
+    cursor:pointer;border:1px solid var(--border);
+    background:var(--panel);color:var(--text);
+    margin-bottom:11px;text-decoration:none;
+    transition:background .18s ease, border-color .18s ease, transform .1s ease;
+    box-shadow:0 1px 2px rgba(44,37,33,.04);
+  }
+  .btn:active{transform:scale(.985);}
+  .btn:hover{background:#fffdfa;border-color:rgba(150,96,58,.45);}
+  .btn-option{text-align:left;line-height:1.45;}
+  .btn-primary{
+    background:linear-gradient(135deg, var(--accent-soft), var(--accent));
+    border:none;color:#fff;font-weight:600;
+    box-shadow:0 6px 18px rgba(150,96,58,.22);
+  }
+  .btn-primary:hover{background:linear-gradient(135deg, #cb9556, #a26a3f);border:none;}
+  .btn-ghost{background:transparent;color:var(--accent);box-shadow:none;}
+
+  .spacer{flex:1;min-height:18px;}
+
+  .card{
+    background:var(--panel);
+    border:1px solid rgba(150,96,58,.14);
+    border-radius:var(--radius);
+    padding:22px 20px;margin-bottom:18px;
+    box-shadow:0 2px 10px rgba(44,37,33,.04);
+  }
+  .card-soft{background:var(--panel-soft);box-shadow:none;}
+  .card-check{
+    background:var(--accent-pale);
+    border:1px solid var(--border);
+    box-shadow:none;
+  }
+  .eyebrow{
+    font-size:11px;letter-spacing:.09em;color:var(--text-dim);
+    margin-bottom:9px;text-transform:uppercase;
+  }
+  .eyebrow-accent{color:var(--accent);}
+  .divider{
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(150,96,58,.30), transparent);
+    margin:26px 0;
+  }
+  .depth{border-left:2px solid var(--accent-soft);padding:2px 0 2px 16px;margin:4px 0 6px;}
+  .depth-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:21px;font-weight:600;margin-bottom:8px;color:var(--accent);
+  }
+  .scale{display:flex;gap:4px;margin-bottom:14px;}
+  .scale i{flex:1;height:4px;border-radius:2px;background:rgba(150,96,58,.15);}
+  .scale i.on{background:var(--accent-soft);}
+  .value-list{margin:6px 0 18px;padding:16px 0 2px;border-top:1px solid rgba(150,96,58,.16);}
+  .value-eyebrow{
+    font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:12px;
+  }
+  .value-item{
+    display:flex;align-items:flex-start;gap:10px;
+    font-size:14.5px;line-height:1.5;color:var(--text);margin-bottom:10px;
+  }
+  .value-item:last-child{margin-bottom:0;}
+  .value-mark{color:var(--accent-soft);flex-shrink:0;margin-top:1px;}
+  .welcome-name{color:var(--accent);font-weight:600;}
+  .q-num{font-size:12px;color:var(--text-dim);margin-bottom:10px;letter-spacing:.04em;}
+  p.lead{font-size:17px;line-height:1.6;}
+  .card p:last-child{margin-bottom:0;}
+  .quote{
+    border-left:3px solid var(--accent-soft);
+    padding:2px 0 2px 18px;margin:2px 0 20px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:23px;line-height:1.35;color:var(--accent);font-style:italic;
+  }
+  b{font-weight:600;color:#1f1a17;}
+  .photo-frame{
+    position:relative;width:100%;aspect-ratio:4/5;max-height:340px;
+    border-radius:var(--radius);overflow:hidden;margin:4px 0 22px;
+    background:linear-gradient(160deg, var(--panel-soft), #efe3d4);
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .photo-frame img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+  .photo-hint{
+    font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+    text-align:center;padding:0 20px;line-height:1.6;
+  }
+  .why-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:14px;}
+  .why-item:last-of-type{margin-bottom:4px;}
+  .why-item p{margin:0;font-size:15px;line-height:1.6;}
+  .author{
+    display:flex;align-items:center;gap:12px;
+    margin-top:20px;padding-top:16px;border-top:1px solid rgba(150,96,58,.16);
+  }
+  .photo-round{
+    width:52px;height:52px;border-radius:50%;flex-shrink:0;overflow:hidden;
+    background:linear-gradient(160deg, var(--panel-soft), #e8d9c6);
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:9px;letter-spacing:.06em;color:var(--accent);text-align:center;
+  }
+  .photo-round img{width:100%;height:100%;object-fit:cover;}
+  .author-name{font-size:14.5px;font-weight:600;line-height:1.4;}
+  .author-sub{font-size:12.5px;color:var(--text-dim);letter-spacing:.04em;}
+</style>
+</head>
+<body>
+<div class="dust"></div>
+<div class="app" id="app">
+
+  <!-- ЭКРАН 0: ПРИВЕТСТВИЕ -->
+  <div class="screen active" data-screen="welcome">
+    <div class="badge"><span class="dot"></span><span>тест · 12 вопросов · 3 минуты</span></div>
+    <h1>Где именно вы <em>себя потеряли</em></h1>
+    <div class="photo-frame">
+      <img src="serafima.jpg" alt="" onerror="this.remove()">
+      <div class="photo-hint">здесь фото Серафимы<br>файл serafima.jpg рядом с index.html</div>
+    </div>
+    <p class="lead">Меня зовут <span class="welcome-name">Серафима</span>. Ко мне часто приходят с одним запросом, а работать приходится совсем с другим. Записываются разобраться с отношениями, а дело оказывается не в партнере. Приходят про деньги, а разговор в итоге про то, как человек обращается с собой.</p>
+
+    <div class="card card-soft">
+      <div class="eyebrow">как это было у меня</div>
+      <p>У меня была натальная карта, разобранная до мелочей. Я изучала себя через нумерологию, потом пробовала другие методы самопознания: матрицу, дизайн человека, расклады. Каждый следующий инструмент давал еще кусочек объяснения и ощущение, что вот теперь станет понятно, как жить.</p>
+      <p>В какой-то момент я поняла простую вещь: <b>сами по себе инструменты не работают.</b></p>
+    </div>
+
+    <div class="quote">Знать о себе всю информацию недостаточно. Нужно понимать, как ее применять и какие конкретные действия начинать делать.</div>
+
+    <div class="card card-soft">
+      <div class="eyebrow">что с этим делать</div>
+      <p>Астрология и нумерология показывают ваши сильные стороны, периоды и сценарии, которые повторяются из года в год. Дальше все упирается в работу над собой, потому что <b>именно с нее начинаются любые изменения.</b></p>
+      <p>Когда она сделана, вы перестаете жить наугад. Становится видно ваши настоящие желания, а не чужие, понятно, какая у вас цель, и понятно, какими шагами вы к ней придете.</p>
+    </div>
+
+    <div class="card card-check">
+      <div class="eyebrow eyebrow-accent">как проходить</div>
+      <p>Тест показывает, где именно вы себя потеряли. Двенадцать вопросов, некоторые из них неудобные. Отвечайте первым движением и не редактируйте себя: ответы никто, кроме вас, не увидит.</p>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary" onclick="startQuiz()">начать</button>
+  </div>
+
+  <!-- ЭКРАН ВОПРОСОВ -->
+  <div class="screen" data-screen="question">
+    <div class="progress" id="progress"></div>
+    <div class="q-num" id="qNum"></div>
+    <h2 id="qText"></h2>
+    <div id="qOptions"></div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ЭКРАН РЕЗУЛЬТАТА -->
+  <div class="screen" data-screen="result">
+    <div class="badge"><span class="dot"></span><span id="resultStep"></span></div>
+    <h1 id="resultTitle"></h1>
+    <p id="resultIntro" class="dim"></p>
+    <div id="resultBody"></div>
+
+    <div class="card card-check">
+      <div class="eyebrow eyebrow-accent">проверка на сегодня</div>
+      <p id="checkBody" style="margin:0;"></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card card-soft">
+      <div class="eyebrow">насколько глубоко это уже вросло</div>
+      <div class="scale" id="depthScale"></div>
+      <div class="depth">
+        <div class="depth-title" id="depthTitle"></div>
+        <p id="depthBody" style="margin:0;"></p>
+      </div>
+    </div>
+
+    <div class="card card-soft">
+      <div class="eyebrow">вторым голосом звучит вот это</div>
+      <h2 id="secondaryTitle" style="font-size:20px;margin-bottom:8px;"></h2>
+      <p id="secondaryBody" style="margin:0;"></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card">
+      <div class="eyebrow eyebrow-accent">почему стоит идти дальше со мной</div>
+      <div class="why-item"><span class="value-mark">✦</span><p><b>Я вижу не только сценарий, но и выход из него.</b> Астрология и нумерология показывают, откуда это у вас взялось и в какие периоды обостряется. Психология дает то, чем это меняют. По отдельности обе части работают слабо, я семь лет собирала их вместе.</p></div>
+      <div class="why-item"><span class="value-mark">✦</span><p><b>Я не оставлю вас наедине с инсайтом.</b> Понять про себя и изменить у себя это разные работы. Поэтому в канале каждую неделю есть одно небольшое действие и разбор, почему именно оно дается тяжело.</p></div>
+      <div class="why-item"><span class="value-mark">✦</span><p><b>Вы будете там не одна.</b> Женщины приносят свои живые ситуации, я их разбираю, и почти в каждой вы узнаете кусочек своей.</p></div>
+      <div class="why-item"><span class="value-mark">✦</span><p><b>Начать можно с малого.</b> Никаких созвонов, анкет и разговоров со мной лично. Зашли, прочитали свой разбор, сделали одно действие и посмотрели, что изменилось.</p></div>
+      <div class="author">
+        <div class="photo-round"><img src="serafima.jpg" alt="" onerror="this.parentNode.textContent='фото'"></div>
+        <div>
+          <div class="author-name">Серафима Бачинская</div>
+          <div class="author-sub">астрология и психология</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p id="ctaText"></p>
+
+      <div class="value-list">
+        <div class="value-eyebrow">что вас там ждет</div>
+        <div class="value-item"><span class="value-mark">✦</span><span>Полный разбор вашего результата, его нет больше нигде</span></div>
+        <div class="value-item"><span class="value-mark">✦</span><span>Мое голосовое отдельно под ваш тип</span></div>
+        <div class="value-item"><span class="value-mark">✦</span><span>Подкаст «Ты все про себя понимаешь. И ничего не меняется»</span></div>
+        <div class="value-item"><span class="value-mark">✦</span><span>Разбор ретроградной Венеры с 3 октября по 13 ноября: что успеть и чего не решать</span></div>
+        <div class="value-item"><span class="value-mark">✦</span><span>Задание недели и разбор ваших живых ситуаций</span></div>
+        <div class="value-item"><span class="value-mark">✦</span><span>Живой эфир со мной</span></div>
+      </div>
+
+      <a class="btn btn-primary" id="channelBtn" href="#" target="_blank" rel="noopener">забрать свой разбор</a>
+      <button class="btn btn-ghost" onclick="restartQuiz()">пройти заново</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if(tg){ tg.ready(); tg.expand(); }
+
+// ---------- НАСТРОЙКИ ----------
+// Запасная ссылка. Используется, пока не проставлены диплинки BotHelp ниже.
+const CHANNEL_LINK = "https://t.me/+XM8qwsIHqp1kNDQ6";
+
+// Диплинки BotHelp под каждый тип результата.
+// В BotHelp делаем семь веток и берем у каждой прямую ссылку, вставляем сюда.
+// Пока строка пустая, кнопка ведет на CHANNEL_LINK.
+const BOT_LINKS = {
+  A:  "",   // вас нет в собственном списке
+  B:  "",   // к себе вы строже, чем к кому-либо другому
+  CP: "",   // отношения держите вы, вариант в паре
+  CS: "",   // вы всегда были той, кто держит, вариант без пары
+  DP: "",   // рядом человек, а вы все равно одна, вариант в паре
+  DS: "",   // рядом чаще оказываются те, с кем нельзя сблизиться, вариант без пары
+  E:  ""    // ваш масштаб не совпадает с вашей жизнью
+};
+
+// Необязательно. Вебхук, если техчасть захочет складывать ответы целиком
+// в свою таблицу или базу. Пустая строка означает, что отправки нет.
+const WEBHOOK_URL = "";
+
+let RESULT_CODE = "";   // например CP_mid
+let RESULT_PAYLOAD = null;
+
+// ---------- НАПРАВЛЕНИЯ ----------
+// Поля title / body / check могут быть объектом {pair, solo}: вариант зависит от ответа на вопрос 2
+const DIRECTIONS = {
+  A: {
+    step: "отношения с собой · контакт",
+    title: "Вас нет в собственном списке",
+    body: [
+      "Спросите вас, чего вы хотите, и вы начнете перечислять, что надо сделать. Про работу, про детей, про маму, про ремонт. <b>Про себя ничего.</b>",
+      "<b>Желание это навык. Если им годами не пользоваться, он пропадает.</b> За вас решали, или было не до того, или сказать «я хочу» было некому. И постепенно этот вопрос перестал вызывать хоть что-то, кроме раздражения.",
+      "Поэтому свободный день вас скорее пугает. Чужие дела понятные: их видно, их можно сделать и закрыть. Свои надо сначала откопать, а это долго и непривычно, проще заняться чужими."
+    ],
+    check: "Скажите вслух три вещи, которых вы хотите. Не «надо бы», а хочу. Если на третьей вы зависли, вы уже знаете свой ответ.",
+    secondary: "вторым слоем идет ощущение, что ваша жизнь идет фоном к чужой."
+  },
+  B: {
+    step: "отношения с собой · внутренний суд",
+    title: "К себе вы строже, чем к кому-либо другому",
+    body: [
+      "Свои недочеты вы перечислите сразу, без подготовки, с примерами. Спросят про сильные стороны, и нужна пауза, а потом формулировка помягче, чтобы не показаться нескромной.",
+      "Внутри при этом работает строгий комментатор: тут медленно, тут не разобралась, другая бы справилась лучше. Вы не слышите его как отдельный голос, для вас это просто описание того, как есть. <b>Обычно такой голос появляется не сам по себе.</b> Он чей-то, просто звучит очень давно и стал привычным.",
+      "Когда вас хвалят, внутри дергается, и вы отмахиваетесь. Человек говорит о ком-то, кого вы в себе пока не знаете.",
+      "В этом месте здорово выручает астрология: появляется объяснение, такое положение, такой характер, ничего не поделаешь. На неделю становится спокойнее, а строгость остается прежней, теперь еще и обоснованная."
+    ],
+    check: "Вспомните последнее, что у вас получилось, и расскажите это одним предложением. Без слов «просто», «повезло» и «там ничего сложного». Если не выходит, ничего страшного, просто заметьте, на каком месте захотелось смягчить.",
+    secondary: "вторым слоем идет привычка объяснять свои удачи чем угодно, только не собой."
+  },
+  C: {
+    step: "отношения с партнером · вы держите все",
+    title: {
+      pair: "Отношения держите вы, и это не фигура речи",
+      solo: "Вы всегда были той, кто держит"
+    },
+    body: {
+      pair: [
+        "Вы понимаете его настроение по звуку двери. Заранее подбираете слова, чтобы не началось. Помните, кому что обещано, когда к врачу, что заканчивается в холодильнике и что он забудет, если не напомнить.",
+        "Это работа, и ее не видно ни ему, ни вам. Поэтому усталость получается необъяснимая: вроде ничего особенного не делали, а к вечеру пусто.",
+        "Дальше включается механика, в которой никто не виноват. <b>Чем больше берете вы, тем меньше остается ему.</b> Он не обленился, он просто ни разу не встретил пустое место, которое надо закрыть. Вы закрываете раньше.",
+        "И есть часть, которую вслух говорят редко. <b>Пока вы незаменимая, вас не оставят.</b> Страховка так себе, но она работает, и расставаться с ней страшно."
+      ],
+      solo: [
+        "Пары нет, а тянете вы все равно: работа, родители, подруги, чужие ночные кризисы. Вы тот человек, к которому идут, когда плохо.",
+        "В прошлых отношениях вы отвечали за все. Следили за настроением, сглаживали, объясняли ему его же чувства. Ушли вы, скорее всего, на пустом баке. Любовь там еще оставалась.",
+        "Дальше есть развилка, и она неприятная. <b>Следующий, с большой вероятностью, снова окажется человеком, которого надо чинить.</b> Рядом с самостоятельным непонятно, чем быть полезной, и от этой непонятности хочется сбежать."
+      ]
+    },
+    check: {
+      pair: "Не напоминайте об одном деле, о котором обычно напоминаете. И смотрите не на него, а на себя: в какую минуту станет невыносимо и рука потянется написать.",
+      solo: "Вспомните три последние просьбы, на которые вы согласились. Сколько из них вы хотели выполнять."
+    },
+    secondary: "вторым слоем идет усталость, которую не объяснить количеством дел."
+  },
+  D: {
+    step: "отношения с партнером · близость",
+    title: {
+      pair: "Рядом человек, а вы все равно одна",
+      solo: "Рядом чаще оказываются те, с кем нельзя сблизиться"
+    },
+    body: {
+      pair: [
+        "У вас все нормально, и объяснить это «нормально» невозможно, жаловаться-то не на что. Про дела, планы и кто кого забирает разговор идет легко. Сказать «мне сейчас плохо» просто так, без повода, не выходит.",
+        "Обычно за этим стоит старая мысль: <b>настоящую меня не вынесут.</b> Поэтому в отношениях живет версия поспокойнее и поудобнее. Она правда никого не пугает, и любят при этом ее.",
+        "<b>Одиночество вдвоем переносится тяжелее, чем одиночество в пустой квартире.</b> В пустой хотя бы понятно, почему тебе одиноко."
+      ],
+      solo: [
+        "Рядом регулярно оказываются те, с кем близость невозможна технически: занятые, женатые, живущие в другой стране, глухие к чувствам. Каждый раз это выглядит случайностью, и каждый раз это один и тот же человек.",
+        "Если сближаться страшно, выбор получается логичный. С недоступным можно любить в полную силу и ничем не рисковать: проверки «а что будет, когда он увидит меня вблизи» не случится никогда.",
+        "Астрология тут предлагает кармические связи и сроки. Может быть, и так. Только <b>пока сценарий на месте, любой благоприятный период приведет вам того же самого человека с другим именем.</b>"
+      ]
+    },
+    check: {
+      pair: "Скажите сегодня одну настоящую фразу и не смягчайте ее. Без «может быть», «если тебе не сложно» и «я, наверное, странная, но».",
+      solo: "Вспомните последнюю историю и найдите момент, когда вы поняли, что ничего не выйдет. Скорее всего, это были первые две недели. Вы остались."
+    },
+    secondary: "вторым слоем идет привычка показывать людям версию поспокойнее."
+  },
+  E: {
+    step: "деньги и реализация · следствие",
+    title: "Ваш масштаб не совпадает с вашей жизнью",
+    body: [
+      "Вы умеете больше, чем вам платят. Цена не менялась года два, текст написан и не выложен, идея лежит в заметках с позапрошлой осени.",
+      "<b>Мешает обычно мысль, что получится.</b> Тогда это придется удерживать: быть на виду, отвечать, соответствовать, и обратно в незаметность уже не спрячешься. Провала боятся меньше.",
+      "Первым по-настоящему это направление почти не бывает. Деньги и проявленность показывают, что у вас происходит с собой, и держатся ровно на той цифре, в которую вы себя оцениваете внутри."
+    ],
+    check: "Назовите вслух свою настоящую цену. Ту, за которую не обидно работать в плохой день. И сравните с той, которую вы называете клиентам.",
+    secondary: "вторым слоем идет потолок, который держите вы сами, а объясняете рынком."
+  }
+};
+
+// ---------- ГЛУБИНА ----------
+const DEPTH = {
+  low: {
+    title: "Это еще не срослось с вами",
+    body: "Вы пока отличаете себя от этой истории. Бывают дни, когда все по-старому, а бывают такие, когда вы смотрите на это со стороны и удивляетесь. Пока расстояние есть, менять надо поведение, а не мнение о себе. Это в разы быстрее."
+  },
+  mid: {
+    title: "Это уже стало характером",
+    body: "Вы давно не считаете это проблемой, вы считаете это собой: я такой человек, я так устроена, у меня и в карте так. Пока это характер, менять как будто нечего, и любая попытка заканчивается словами «ну я же говорила»."
+  },
+  high: {
+    title: "Это стало вашей биографией",
+    body: "Длится столько, что уже объясняет вам всю вашу жизнь: почему так вышло с работой, почему так с мужчинами, почему нет сил. Изнутри такое не разбирают, оно выглядит как правда. Нужен взгляд снаружи и очень мелкие шаги, иначе через пару недель все вернется на место."
+  }
+};
+
+// ---------- ВОПРОСЫ ----------
+const QUESTIONS = [
+  { type:"stage", text:"Как давно вы живете с ощущением, что что-то не так?", options:[
+    "Появилось недавно",
+    "Примерно год",
+    "Несколько лет",
+    "Столько, сколько себя помню"
+  ]},
+  { type:"pair", text:"Что у вас сейчас с отношениями?", options:[
+    "В паре, давно",
+    "Отношения есть, но что-то в них не так",
+    "Сейчас одна, и уже долго",
+    "Недавно все закончилось"
+  ]},
+  { type:"score", text:"На что уходит ваша голова в обычный день?", options:[
+    {d:"A", t:"На то, чтобы всем вокруг было удобно"},
+    {d:"B", t:"На разбор того, что я опять сделала не так"},
+    {d:"C", t:"На то, чтобы дома все работало и никто ничего не забыл"},
+    {d:"D", t:"На то, чтобы не показать, что со мной на самом деле"},
+    {d:"E", t:"На дела, деньги и бесконечные списки"}
+  ]},
+  { type:"score", text:"Что вы делаете, когда вам плохо?", options:[
+    {d:"A", t:"Нахожу себе занятие, лишь бы не сидеть с этим"},
+    {d:"B", t:"Прокручиваю, где я была неправа и как надо было"},
+    {d:"C", t:"Иду поддерживать кого-то другого, так мне легче"},
+    {d:"D", t:"Замолкаю. Говорить об этом невозможно"},
+    {d:"E", t:"Работаю. Работа хотя бы дает понятный результат"}
+  ]},
+  { type:"score", text:"Как вы отвечаете на вопрос «чего ты хочешь?»", options:[
+    {d:"A", t:"Начинаю перечислять, что мне надо успеть"},
+    {d:"B", t:"Сначала думаю, не слишком ли это много для меня"},
+    {d:"C", t:"Отвечаю за всех: чтобы у моих все было хорошо"},
+    {d:"D", t:"Хочу, чтобы меня понимали без объяснений"},
+    {d:"E", t:"Хочу зарабатывать больше и заниматься своим"}
+  ]},
+  { type:"score", text:"Что ранит вас сильнее всего рядом с близким человеком?", options:[
+    {d:"A", t:"Что про меня не спрашивают. Хотя я и не рассказываю"},
+    {d:"B", t:"Что виноватой в итоге оказываюсь я"},
+    {d:"C", t:"Что я тяну на себе, а это считается нормой"},
+    {d:"D", t:"Что мы рядом, а говорить не о чем"},
+    {d:"E", t:"Что мое дело считают увлечением, а не работой"}
+  ]},
+  { type:"score", text:"Что происходит, когда для вас делают что-то хорошее просто так?", options:[
+    {d:"A", t:"Не знаю, куда себя деть, и стараюсь сразу отдать обратно"},
+    {d:"B", t:"Теряюсь и думаю, что это как-то слишком для меня"},
+    {d:"C", t:"Неловко. Обычно это я для других, а не наоборот"},
+    {d:"D", t:"Растрогаюсь и быстро перевожу разговор"},
+    {d:"E", t:"Прикидываю, во сколько это обошлось и чем возвращать"}
+  ]},
+  { type:"score", text:"Как вы ссоритесь?", options:[
+    {d:"A", t:"Соглашаюсь раньше, чем успеваю понять, права я или нет"},
+    {d:"B", t:"Потом сутки прокручиваю разговор и виню себя"},
+    {d:"C", t:"Объясняю ему, что он чувствует, и мирюсь первая"},
+    {d:"D", t:"Замолкаю и ухожу в себя на несколько дней"},
+    {d:"E", t:"Ссор почти нет. Мне некогда"}
+  ]},
+  { type:"score", text:"Что вы чувствуете вечером, когда все стихло?", options:[
+    {d:"A", t:"Пустоту. День прошел, а меня в нем не было"},
+    {d:"B", t:"Недовольство собой. Опять не так и не столько"},
+    {d:"C", t:"Что я снова тащу одна, даже когда рядом кто-то есть"},
+    {d:"D", t:"Одиночество, которое непонятно как объяснить"},
+    {d:"E", t:"Что день прошел, а к своему я так и не подошла"}
+  ]},
+  { type:"score", text:"Что вам труднее всего сказать вслух?", options:[
+    {d:"A", t:"«Я хочу вот так»"},
+    {d:"B", t:"«У меня хорошо получается»"},
+    {d:"C", t:"«Сделай это сам»"},
+    {d:"D", t:"«Мне сейчас плохо, побудь рядом»"},
+    {d:"E", t:"«Это стоит столько»"}
+  ]},
+  { type:"depth", text:"Когда вы в последний раз сказали близкому «мне так не подходит» и не стали смягчать?", options:[
+    "На днях",
+    "Было, но давно",
+    "Пытаюсь вспомнить и не могу",
+    "Никогда. Я так не умею"
+  ]},
+  { type:"ready", text:"Что вам нужно прямо сейчас?", options:[
+    "Просто посмотреть, что это было",
+    "Понять, с чего вообще начинать",
+    "Начать и чтобы кто-то был рядом",
+    "Уже начала, нужна скорость"
+  ]}
+];
+
+const RESULT_INTRO = {
+  "12": "Заметили вы это недавно, значит, еще помните, как было иначе. Это большое преимущество, и оно не навсегда.",
+  "34": "Вы живете с этим давно и наверняка уже сами себе все объяснили. Объяснение есть, выхода пока нет. Вот что видно по ответам."
+};
+
+const FINAL_CTA = {
+  "12": "Тест дает направление. Дальше нужна конкретика: откуда это у вас взялось, как оно выглядит именно в вашем случае и что делать в ближайшие две недели. Я написала полный разбор под каждый результат, они лежат в закрытом канале.",
+  "34": "Понимания вам хватит на лекцию. Не хватает места, где пробуют делать, а не обсуждают. В канале лежит полный разбор вашего типа, мое голосовое к нему и разборы живых ситуаций участниц по шагам."
+};
+
+// ---------- СОСТОЯНИЕ ----------
+let current = -1;
+let scores = {A:0,B:0,C:0,D:0,E:0};
+let lastSeen = {A:-1,B:-1,C:-1,D:-1,E:-1};
+let stageIdx = 0;
+let pairIdx = 0;
+let depthIdx = 0;
+let readyIdx = 0;
+
+function pick(value, mode){
+  if(value && typeof value === "object" && !Array.isArray(value) && (value.pair || value.solo)){
+    return value[mode];
+  }
+  return value;
+}
+
+function showScreen(name){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.querySelector('[data-screen="'+name+'"]').classList.add("active");
+}
+
+function startQuiz(){
+  current = 0;
+  scores = {A:0,B:0,C:0,D:0,E:0};
+  lastSeen = {A:-1,B:-1,C:-1,D:-1,E:-1};
+  stageIdx = 0; pairIdx = 0; depthIdx = 0; readyIdx = 0;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  showScreen("question");
+  const q = QUESTIONS[current];
+
+  const progress = document.getElementById("progress");
+  progress.innerHTML = "";
+  QUESTIONS.forEach((_, i)=>{
+    const dot = document.createElement("i");
+    if(i < current) dot.className = "done";
+    else if(i === current) dot.className = "current";
+    progress.appendChild(dot);
+  });
+
+  document.getElementById("qNum").textContent = "Вопрос " + (current+1) + " из " + QUESTIONS.length;
+  document.getElementById("qText").textContent = q.text;
+
+  const optsWrap = document.getElementById("qOptions");
+  optsWrap.innerHTML = "";
+  q.options.forEach((opt, idx)=>{
+    const btn = document.createElement("button");
+    btn.className = "btn btn-option";
+    btn.textContent = typeof opt === "string" ? opt : opt.t;
+    btn.onclick = ()=> selectAnswer(idx);
+    optsWrap.appendChild(btn);
+  });
+  window.scrollTo(0,0);
+}
+
+function selectAnswer(idx){
+  const q = QUESTIONS[current];
+
+  if(q.type === "stage"){
+    stageIdx = idx;
+  } else if(q.type === "pair"){
+    pairIdx = idx;
+  } else if(q.type === "depth"){
+    depthIdx = idx;
+  } else if(q.type === "ready"){
+    readyIdx = idx;
+  } else if(q.type === "score"){
+    const d = q.options[idx].d;
+    scores[d] += 1;
+    lastSeen[d] = current;
+  }
+
+  current++;
+  if(current < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    renderResult();
+  }
+}
+
+function renderResult(){
+  const mode = pairIdx < 2 ? "pair" : "solo";
+
+  const ranked = Object.keys(scores).sort((a,b)=>{
+    if(scores[b] !== scores[a]) return scores[b]-scores[a];
+    return lastSeen[b]-lastSeen[a];
+  });
+  const primary = DIRECTIONS[ranked[0]];
+  const secondary = DIRECTIONS[ranked[1]];
+
+  const stageBranch = stageIdx < 2 ? "12" : "34";
+  const readyBranch = readyIdx < 2 ? "12" : "34";
+
+  const depthScore = stageIdx + depthIdx; // 0..6
+  const depthKey = depthScore <= 2 ? "low" : (depthScore <= 4 ? "mid" : "high");
+  const depth = DEPTH[depthKey];
+
+  document.getElementById("resultStep").textContent = primary.step;
+  document.getElementById("resultTitle").textContent = pick(primary.title, mode);
+  document.getElementById("resultIntro").textContent = RESULT_INTRO[stageBranch];
+
+  const bodyWrap = document.getElementById("resultBody");
+  bodyWrap.innerHTML = "";
+  pick(primary.body, mode).forEach(par=>{
+    const p = document.createElement("p");
+    p.innerHTML = par;
+    bodyWrap.appendChild(p);
+  });
+
+  document.getElementById("checkBody").textContent = pick(primary.check, mode);
+
+  const scale = document.getElementById("depthScale");
+  scale.innerHTML = "";
+  const filled = depthKey === "low" ? 1 : (depthKey === "mid" ? 2 : 3);
+  for(let i=0;i<3;i++){
+    const s = document.createElement("i");
+    if(i < filled) s.className = "on";
+    scale.appendChild(s);
+  }
+  document.getElementById("depthTitle").textContent = depth.title;
+  document.getElementById("depthBody").textContent = depth.body;
+
+  document.getElementById("secondaryTitle").textContent = pick(secondary.title, mode);
+  document.getElementById("secondaryBody").textContent = secondary.secondary;
+
+  document.getElementById("ctaText").textContent = FINAL_CTA[readyBranch];
+
+  // ---------- КОД РЕЗУЛЬТАТА И ПЕРЕДАЧА В БОТА ----------
+  const dir = ranked[0];
+  const suffix = (dir === "C" || dir === "D") ? (mode === "pair" ? "P" : "S") : "";
+  RESULT_CODE = dir + suffix + "_" + depthKey;
+
+  const u = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : {};
+  RESULT_PAYLOAD = {
+    code: RESULT_CODE,
+    type: dir + suffix,
+    direction: dir,
+    mode: mode,
+    depth: depthKey,
+    stage: stageIdx,
+    pair_status: pairIdx,
+    refusal: depthIdx,
+    ready: readyIdx,
+    scores: scores,
+    user_id: u.id || null,
+    username: u.username || null,
+    first_name: u.first_name || null,
+    ts: new Date().toISOString()
+  };
+
+  const typeCode = dir + suffix;
+  const btn = document.getElementById("channelBtn");
+  btn.href = BOT_LINKS[typeCode] ? BOT_LINKS[typeCode] : CHANNEL_LINK;
+  btn.onclick = function(e){
+    sendToBot();
+    if(tg && tg.openTelegramLink){
+      e.preventDefault();
+      tg.openTelegramLink(btn.href);
+    }
+  };
+
+  if(WEBHOOK_URL){
+    try{
+      fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ initData: tg ? tg.initData : "", result: RESULT_PAYLOAD })
+      }).catch(function(){});
+    }catch(err){}
+  }
+
+  showScreen("result");
+  window.scrollTo(0,0);
+}
+
+// Работает, когда мини-апп открыт кнопкой с обычной клавиатуры бота.
+// В остальных случаях телеграм просто игнорирует вызов.
+function sendToBot(){
+  try{
+    if(tg && tg.sendData && RESULT_PAYLOAD){
+      tg.sendData(JSON.stringify(RESULT_PAYLOAD));
+    }
+  }catch(err){}
+}
+
+function restartQuiz(){
+  current = -1;
+  showScreen("welcome");
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
