@@ -210,6 +210,11 @@
     accent-color:var(--accent);cursor:pointer;
   }
   .consent a{color:var(--accent);text-decoration:underline;}
+  .consent-note{
+    font-size:11.5px;line-height:1.55;color:var(--text-dim);
+    margin-top:12px;padding-top:12px;border-top:1px solid rgba(150,96,58,.14);
+  }
+  .consent-note a{color:var(--accent);text-decoration:underline;}
   .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none;}
   .legal{
     margin-top:22px;padding-top:16px;
@@ -259,12 +264,13 @@
     <div class="consent">
       <label>
         <input type="checkbox" id="cs1" onchange="checkConsent()">
-        <span>Мне есть 18 лет. Даю <a href="https://disk.yandex.ru/i/6Zt_HCiojoMexQ" target="_blank" rel="noopener">согласие на обработку персональных данных</a>, ознакомлена с <a href="https://disk.yandex.ru/i/6rQhTa6D9w9Ebw" target="_blank" rel="noopener">политикой обработки</a> и <a href="https://disk.yandex.ru/i/uno4cEH47R3cog" target="_blank" rel="noopener">офертой</a>.</span>
+        <span>Даю <a href="https://disk.yandex.ru/i/Q3lnXeykiKFxhw" target="_blank" rel="noopener">согласие на обработку персональных данных</a></span>
       </label>
       <label>
         <input type="checkbox" id="cs2" onchange="checkConsent()">
-        <span>Согласна получать материалы и сообщения рекламного характера, <a href="https://disk.yandex.ru/i/rU8Wn28M8pHdSg" target="_blank" rel="noopener">условия</a>.</span>
+        <span>Даю <a href="https://disk.yandex.ru/i/Ug_7apJsNRkXhQ" target="_blank" rel="noopener">согласие на получение рекламной рассылки</a></span>
       </label>
+      <div class="consent-note">Нажимая «начать», вы подтверждаете, что вам исполнилось 18 лет, ознакомлены с <a href="https://disk.yandex.ru/i/4KvI_Y5jIBCUGA" target="_blank" rel="noopener">политикой обработки персональных данных</a> и принимаете условия <a href="https://disk.yandex.ru/i/YO7_Q_AbSOvXJQ" target="_blank" rel="noopener">публичной оферты</a>.</div>
     </div>
 
     <button class="btn btn-primary" id="startBtn" onclick="startQuiz()" disabled>начать</button>
@@ -346,10 +352,10 @@
         <p>Тест носит информационный характер. Это не медицинская, психиатрическая или психологическая диагностика, и он не заменяет консультацию специалиста.</p>
         <p>Индивидуальный предприниматель Бачинская Серафима Викторовна<br>ИНН 390705475471</p>
         <p class="legal-links">
-          <a href="https://disk.yandex.ru/i/6rQhTa6D9w9Ebw" target="_blank" rel="noopener">Политика обработки персональных данных</a>
-          <a href="https://disk.yandex.ru/i/6Zt_HCiojoMexQ" target="_blank" rel="noopener">Согласие на обработку персональных данных</a>
-          <a href="https://disk.yandex.ru/i/rU8Wn28M8pHdSg" target="_blank" rel="noopener">Согласие на рекламную рассылку</a>
-          <a href="https://disk.yandex.ru/i/uno4cEH47R3cog" target="_blank" rel="noopener">Публичная оферта</a>
+          <a href="https://disk.yandex.ru/i/4KvI_Y5jIBCUGA" target="_blank" rel="noopener">Политика обработки персональных данных</a>
+          <a href="https://disk.yandex.ru/i/Q3lnXeykiKFxhw" target="_blank" rel="noopener">Согласие на обработку персональных данных</a>
+          <a href="https://disk.yandex.ru/i/Ug_7apJsNRkXhQ" target="_blank" rel="noopener">Согласие на рекламную рассылку</a>
+          <a href="https://disk.yandex.ru/i/YO7_Q_AbSOvXJQ" target="_blank" rel="noopener">Публичная оферта</a>
         </p>
         <p>Отозвать согласие и задать вопрос: <a href="mailto:Shitikova092@mail.ru">Shitikova092@mail.ru</a></p>
       </div>
