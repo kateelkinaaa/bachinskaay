@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Что не пускает вас к вашим желаниям</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F3FB;--card:#FFFFFF;--plum:#3F3170;--plum2:#5B479E;--deep:#2A2050;--accent:#8C79C0;--gold:#C9A46A;--ink:#231F33;--muted:#6F6880;--line:#E6DFF2;--tint:#EEE7FA}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Montserrat,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:16.5px;line-height:1.55}
+.wrap{max-width:560px;margin:0 auto;padding:18px 16px 48px;min-height:100vh;display:flex;flex-direction:column}
+h1,h2,h3{font-family:Montserrat,Arial,sans-serif;color:var(--ink);font-weight:700;margin:0;letter-spacing:-.01em}
+h2{font-size:23px;line-height:1.3}
+h3{font-size:21px;line-height:1.3;margin-top:44px}
+h4{font:700 17.5px/1.35 Montserrat,Arial,sans-serif;margin:16px 0 0;color:var(--ink)}
+p{margin:13px 0 0}
+.who{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.av{flex:0 0 40px;width:40px;height:40px;overflow:hidden;border-radius:50%;background:linear-gradient(135deg,var(--plum2),var(--deep));color:#fff;font:600 13px Lora,Georgia,serif;display:flex;align-items:center;justify-content:center}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.who b{font-weight:600;font-size:15.5px}
+.hero{position:relative;overflow:hidden;border-radius:22px;padding:22px 20px 26px;color:#fff;background:linear-gradient(125deg,#3A2C6B 0%,#4E3C8E 50%,#6A55B0 100%)}
+.hero:before{content:"";position:absolute;right:-90px;top:-90px;width:420px;height:420px;border-radius:50%;background:repeating-radial-gradient(circle,rgba(255,255,255,.085) 0 1.5px,transparent 1.5px 26px);pointer-events:none}
+.hero>*{position:relative}
+.badge{display:inline-block;background:var(--gold);color:#2A2050;font:700 13px Montserrat,Arial,sans-serif;border-radius:20px;padding:6px 13px;margin-bottom:14px}
+.hero h1{color:#fff;font-size:29px;line-height:1.18}
+.hero h1.res{font-size:27px}
+.hero p{color:#E2DAF6;margin-top:12px;font-size:16.5px;line-height:1.5}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chips span{background:var(--tint);color:var(--plum);font:600 13.5px Montserrat,Arial,sans-serif;border-radius:20px;padding:6px 12px}
+.checks{list-style:none;margin:20px 0 0;padding:0}
+.checks li{display:flex;gap:12px;align-items:flex-start;margin-top:13px;font-size:16.5px;line-height:1.4}
+.ck{flex:0 0 24px;width:24px;height:24px;border-radius:50%;background:var(--plum) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 12.5l3.2 3.2L17 9' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/24px no-repeat}
+.ck.soft{background-color:#DCD0F3;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 12.5l3.2 3.2L17 9' fill='none' stroke='%233F3170' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.btn{display:block;width:100%;border:0;border-radius:14px;background:linear-gradient(135deg,var(--plum2),var(--plum));color:#fff;font:700 17px Montserrat,Arial,sans-serif;padding:17px 18px;margin-top:24px;cursor:pointer;text-align:center;text-decoration:none;box-shadow:0 8px 20px rgba(63,49,112,.22)}
+.btn.ghost{background:transparent;color:var(--plum);border:1.5px solid var(--line);margin-top:12px;font-weight:500;box-shadow:none}
+.small{font-size:13.5px;color:var(--muted);text-align:center;margin-top:12px}
+.bar{height:5px;background:var(--line);border-radius:5px;overflow:hidden;margin-bottom:8px}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.count{font-size:14px;color:var(--muted);margin-bottom:22px}
+.note{font-size:15px;color:var(--accent);font-weight:600;margin-bottom:12px}
+.stmt{font-size:22px;line-height:1.35;color:var(--ink);font-weight:600;min-height:124px}
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;margin-top:10px;font:500 16px/1.4 Montserrat,Arial,sans-serif;color:var(--ink);cursor:pointer}
+.opt:active,.opt.on{border-color:var(--accent);background:var(--tint)}
+.re{min-height:24px;margin-top:14px;font-size:15px;color:var(--muted);font-style:italic}
+.back{background:none;border:0;color:var(--muted);font:500 15px Montserrat,Arial,sans-serif;padding:14px 0 0;cursor:pointer;align-self:flex-start}
+.lead{font:700 18.5px/1.4 Montserrat,Arial,sans-serif;margin-top:16px}
+.sph{background:linear-gradient(135deg,#EBE3FA,#F4EEFC);border-radius:18px;padding:16px 18px;margin-top:14px}
+.sph b{display:block;font:700 21px/1.25 Montserrat,Arial,sans-serif;color:var(--plum)}
+.sph span{display:block;margin-top:6px;font-size:15.5px}
+.sc{margin-top:16px}
+.sc .n{font-weight:600;font-size:15.5px}
+.sc .l{display:flex;align-items:center;gap:10px;margin-top:7px}
+.seg{flex:1;display:flex;gap:5px}
+.seg i{flex:1;height:8px;border-radius:5px;background:#DDD3EE}
+.seg i.f1{background:#C3B2EA}.seg i.f2{background:#9C86D6}.seg i.f3{background:#6F58B8}.seg i.f4{background:#3F3170}
+.sc .w{flex:0 0 84px;text-align:right;font:700 14px Montserrat,Arial,sans-serif;color:var(--plum)}
+.sc.me .n{color:var(--plum);font-weight:700}
+.say{display:flex;gap:9px;align-items:flex-end;margin-top:16px}
+.say .bub{background:var(--card);border-radius:16px 16px 16px 4px;padding:12px 15px 13px;box-shadow:0 4px 16px rgba(63,49,112,.08);font-size:15.5px}
+.say .bub b{display:block;color:var(--plum2);font:700 13.5px Montserrat,Arial,sans-serif;margin-bottom:3px}
+.pw{display:flex;gap:11px;align-items:center;background:var(--card);border-radius:14px;padding:13px 15px;margin-top:10px;font-weight:600;font-size:15.5px;line-height:1.35;box-shadow:0 3px 12px rgba(63,49,112,.07)}
+.said{background:var(--card);border-radius:18px;padding:16px 16px 8px;margin-top:14px;box-shadow:0 4px 16px rgba(63,49,112,.08)}
+.said .hd{font:700 15px Montserrat,Arial,sans-serif;color:var(--plum2);margin-bottom:8px}
+.said .it{display:flex;gap:11px;align-items:flex-start;padding:10px 10px;border-radius:12px;font-size:15.5px;line-height:1.4}
+.said .it:nth-child(2){background:var(--tint)}
+.sub{font:700 18px/1.35 Montserrat,Arial,sans-serif;margin-top:12px}
+.stp{display:flex;gap:12px;margin-top:18px}
+.stp .no{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--plum);color:#fff;font:700 14px Montserrat,Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+.stp .bd{flex:1}
+.stp .bd b{display:block;font-weight:700;font-size:16.5px;padding-top:2px}
+.stp .bd span{display:block;color:#4A4458;font-size:15.5px;margin-top:3px}
+.phr{background:linear-gradient(135deg,#F6ECDA,#FBF4E6);border-radius:16px;padding:15px 17px;margin-top:10px}
+.phr b{display:block;font:700 19px/1.3 Montserrat,Arial,sans-serif;color:var(--plum)}
+.phr span{display:block;margin-top:5px;font-size:15px}
+.tool{display:flex;gap:12px;align-items:flex-start;background:var(--card);border-radius:14px;padding:13px 15px;margin-top:10px;box-shadow:0 3px 12px rgba(63,49,112,.07)}
+.tool .tg{flex:0 0 auto;background:var(--tint);color:var(--plum);font:700 12.5px Montserrat,Arial,sans-serif;border-radius:20px;padding:5px 10px;margin-top:1px}
+.tool div{font-size:15.5px;line-height:1.4}
+.lines p{margin:3px 0 0}
+.ask{display:flex;justify-content:flex-end;margin-top:22px}
+.ask span{max-width:78%;background:linear-gradient(135deg,var(--plum2),var(--plum));color:#fff;font:700 17.5px/1.3 Montserrat,Arial,sans-serif;border-radius:18px 18px 4px 18px;padding:12px 16px}
+.card{background:var(--card);border-radius:18px;padding:15px 16px;margin-top:10px;box-shadow:0 4px 16px rgba(63,49,112,.08)}
+.card .top{display:flex;gap:13px;align-items:center}
+.play{position:relative;flex:0 0 46px;width:46px;height:46px;border-radius:50%;background:var(--plum) center/22px no-repeat}
+.play.au{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 6.5v11l9-5.5z' fill='%23fff'/%3E%3C/svg%3E")}
+.play.fl{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 3.5h7l4 4V20a.5.5 0 01-.5.5h-10A.5.5 0 017 20z' fill='none' stroke='%23fff' stroke-width='1.7' stroke-linejoin='round'/%3E%3Cpath d='M9.5 12.5h5M9.5 15.5h5' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")}
+.play.cl{background-color:var(--gold);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4l2.3 4.9 5.2.7-3.8 3.7.9 5.3L12 16l-4.6 2.6.9-5.3-3.8-3.7 5.2-.7z' fill='%232A2050'/%3E%3C/svg%3E")}
+.play:after{content:"";position:absolute;right:-5px;bottom:-5px;width:20px;height:20px;border-radius:50%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='7' y='11' width='10' height='7.5' rx='1.8' fill='%235B479E'/%3E%3Cpath d='M9.3 11V9a2.7 2.7 0 015.4 0v2' fill='none' stroke='%235B479E' stroke-width='1.8'/%3E%3C/svg%3E") center/15px no-repeat;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.card .ti b{display:block;font-weight:700;font-size:16px;line-height:1.3}
+.card .ti i{display:block;font-style:normal;color:var(--plum2);font-weight:600;font-size:13.5px;margin-top:1px}
+.wave{display:flex;align-items:center;gap:10px;margin-top:10px}
+.wave .w{flex:1;height:22px;background:repeating-linear-gradient(90deg,#B9ACD9 0 2px,transparent 2px 5px);-webkit-mask:linear-gradient(90deg,#000,#000);mask:linear-gradient(90deg,#000,#000);clip-path:polygon(0 40%,4% 20%,8% 55%,12% 10%,16% 45%,20% 0,24% 35%,28% 15%,32% 50%,36% 5%,40% 40%,44% 20%,48% 0,52% 30%,56% 10%,60% 45%,64% 15%,68% 35%,72% 5%,76% 40%,80% 20%,84% 50%,88% 10%,92% 35%,96% 20%,100% 45%,100% 60%,96% 80%,92% 65%,88% 90%,84% 50%,80% 80%,76% 60%,72% 95%,68% 65%,64% 85%,60% 55%,56% 90%,52% 70%,48% 100%,44% 80%,40% 60%,36% 95%,32% 50%,28% 85%,24% 65%,20% 100%,16% 55%,12% 90%,8% 45%,4% 80%,0 60%)}
+.wave span{font-size:13.5px;color:var(--muted);font-weight:500}
+.card .cap{margin-top:10px;font-size:15px;color:#4A4458;line-height:1.45}
+.all{font-weight:600;margin-top:22px}
+.total{background:var(--card);border-radius:18px;padding:16px 18px;margin-top:26px;box-shadow:0 4px 16px rgba(63,49,112,.08)}
+.total b{font-weight:700}
+.total .pw{box-shadow:none;padding:9px 0 0;margin:0;background:none;font-weight:500}
+.legal{font-size:12.5px;line-height:1.5;color:var(--muted);text-align:center;margin-top:12px}
+.legal a,.foot a{color:var(--plum2);text-decoration:underline}
+.foot{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.55;color:var(--muted)}
+.foot p{margin:8px 0 0}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* ================= НАСТРОЙКИ =================
+   BOT: имя бота без @. Кнопка результата ведет в бота с меткой вида
+        res_a_dengi (результат и сфера).
+        Бот ставит метки и присылает ссылку на закрепленный пост с файлом.
+   USE_BOT_LINK = false: кнопка ведет сразу на CHANNEL_POST. */
+var AV = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCACQAJADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwB2OtGPU9KeQKaeAaCiORgik56VyXivVkjtnhL4Y4zWxreo/Y4iVG5sZAz3ryvxDLdTb5pix3Hj0qJPoWkZ11cyySv5WWLHrVdLGVnAkVgx55FRWrSb/lH44rqtJmS4jW3vIipzhWYcH8exqW+UpR5jGXSUYYKbW7EcGnHTJEG7GSv8Q711z6QEXAG5R09aSKxyNrDPvWXtB8hhaVHHK4HSQf8AAW/+vXV2aShMMRIg9RyKx59LaCQSIvv7EVuaO4dR8x+XqCeV9qL3Zdh13p5kjDRsR7NyPzrEuYZIiQ6cevUV2jeWE5OAf1rE1G1U5K8j09KpEM5lo1DZX5T7dK6XwzrzhhZ3b8dEY/yrBuItpJGKr5KEEE8cgjtVJ2E0epEA00rgVm+HNU/tKxG85lj+Vvf3rVIrVakEZFNxUhWmlcCmKxq7eeRVa9n8mIt6VcIGKydYb5Ah6HrUydkNI4bxLqTBmd2IyeK5OZZ9YuEhjLbe/OcVs+LpC0mFGSTj2HtV7QNMW3gUkDewyTiuaU7K50U6fM7DNL8NwW2GYbmHrW6umxSxGNo1KnrxVi2g47VegjVTzXFKbbuenCCirGfb2hgP2aUllxlGPUj/ABFNlszG2QMFf1rYuVSWEbfvocrSxRCeMNjtW1OXMjkrU+V3WxjmzE0ZBHvVNbeSzk82McDqMdRXRJbbTtxypxVee2HmtGeAf1BrVGStsQG7jEKlsmOQcH09fxrJvC8DcNuQ9D7VO8LhJbZsDed0Z7BvT8axBqRtn+y3BO1hlGPbtj8K0i7kTjYknKy8r171nzIM9ME96mmk2EOp+XOG9qjZhJweoqjM1vCF59nv/KZsLIMD613m3IFeW2czW13HJ/dYGvT7WQTQI4OQRmtIMzloxSMUwjipioAxTCOtWBqkcVja6pCZA7VuYqjqts1xbNtGWAyPepkroEeVarB9o1CBWHG4sRXQ2ShYwBis3UIx/aIOMbUxWpYxllU4rhq9j0MMXkYKM06MPM2BnFOW3zgVm+INbfRovs9op+1OPv4+4P8AGuaMeZ2OuUlFXZpX+pWWiQb7uYBj0QcsfwqPwzrTardSRiynhiK+ZEzrw3PIrF8N2FvBMdX10m4nZtyRy8hfc56mu2j+IGiCLbJAcrgKyjpXRBQi7HNPmmtUWprVVKSYwGGM/wAqparbbIxKByp5+lakOrWup2MhhKtwJF9xVe6YSWwwSQyZH4f/AFq1ObqcpdovmsO6nI/nXI+JQqzlSOG+Ye2a66+5nO3ug6VyXifJ2sQOn8qiDalY3qLmgmY0eotCsZY5RhtOfariXScE/dP6VhHfJtiXJ3MeK7vRfDT21nhYFurwp5hMh+SBf6n2rWpNRRhSp87MZTuwQcjsRXXeFNZLs1pIeVPGa5+402WICYqoDtglRgH8Pwqnpeora+IdpPykgVdGfMrmden7OVmer470FR3pIXDxBh3FOYVuYXNUD0pNv5U/GaKCjzD4js+j3Nu9nEZJrkthMZwBjJrn9L8YX0VwkV9atGvTOwiu++IMS28NtqRAPkkxk+gPP8xXnr+L7OZ/KnVQPZCxrlqrW1rnTRdlfmsdvYatHdum1s5xVy/0mKS4FzLHucD5Qa43QvKu9Wt30+YsgIaRMEYUnAOD/wDXr0i4fMibhkKAMVxTi4Ox6FOXOrnm/irUp4JI4YITNK7YWMfxGsHU7bxFp7pFeXPkPJGsioibhjqvI/Hn2r1DxDo8d3eQ3tgPs8kY+XgH5j1NZs3h681aWJ9Wv5bhYs7EOABn6CuinUhFanNWpzm/dZh/D261a1llFwWlgblJeSCO4/OvQluVMHHRG/Q03T9NXYsFvDhFGAAKrXEL2NxJA4IBGBml7XmYnR5UZN2f3p9lI/U1zetxfaIzxnGRWzcykMTnPB/nWXK27IPepbtK5tFXhY53RbDF8JGTdsOcEZr0vw+80kdwzWymGUhVmDkEYHQj0rC8KW0f9qAOBjPOemK6jT9QtYdIkES/u5ZWEb9ABu45qakrsdOCijnPE0q6ZYukh5SbA9xgmvNftTm6E/8AFuzXaeOLgalqMFjHlso8p98LgH+dcJXZh1aBw4yXNUPbvCuo/wBoaXE+ckDBrZIzXB/DG9L28luT908V32K3OU1cYpMUo6UtMo5nxxoU2taNJHDcmF1ycYJDD6DvXkWg2kWiz31pqFhLcTTKY43QAFD65PTmvoCVN4IPQ155f28MWs3WUBYSED2rKrPkV0aUaanKzK/hLRY7C7hkZQJnySFJwo9Bmuwdg0x3etZOi2sl3fYiUswAAAq/dK6SFFbLg4OK8yrJyd2etSgoRtEvPbJ5e4E9KpFCG4zilGoy+S0LINy8/UU22vYppArDaag1t1Oi0RBDG0hOMCuf8QTiaZm43VvT3KW9l8nU989K43UJjI55Oa1lKySRnGPNdsx7kb9zDnLN/OqJjxWwltlT6VTu4NgOB0o5rsHGyF8OxmbUygwRtOQfStDWdZtPsw3QSxWdqwG/y8IxHZcf1rlF1G+sL+N7HaZMncp/iXHIpsupXlxNZaWApa5K+bHxnf8AyB5FWoa3ZzTquKVin4eu31nXrjU7n/loSqKf4V6Y/KsLUbf7NfTREY2uR+tdZY2otNSngCFCoJIPrn2rC8RoG1icAckj88V2032PPqeZ0vwyRxcSMPumvTK4/wCHemtb2HmuuC1dltrVGdzVPNFLigcUxDcVwfie2Nrr7vj5Z1Dg+/Q132KwvFmltfaf58S5ntsuoHde4rOrHmjY2oT5ZJnHX/iB/DZhuCjtFMSpZf4WH+NWrfSYvEsLTXVzqFs83zwlJDHtXtgDqfc1nXl6rWqhsFAMnNTSeIg8MCwjaIh9K8+ztotT1o+82lsdPaaYYJNzTM6quxVYk49yTyTVl9LjmYSJ8rjn61ycHi1YOZo1c+zkGrMfjuN8Q29jcSyucKqEHJ+tZ+zka6o6G8d0iEZPSsKRd8mK1EkuZIf9LjCSYzgHOPaqKDdMagaZPDAAnIrN1CLg/StZiFSsfUZwFJzjimtyZM5SUFdViCnBOefwqcz2rzW19cQKIoMIIoxwzqAPnGQcMQMnOap+d5+sEg8RIST7msPUraUTySxzOqsclc8Gurlu0jgm9Lm1aXlrBcSTopRAORu3DPfHt2/Csae5+13hmPVmyfpmqqytHBsB5zTVOHJBrsjHlRwyldnuvhvyzpUBQcbR0rTbpXMfD6++1aKiHqnFdTjFWSalGKXGKKBCYxSEA/Slx2opjPLfG2lGzvJUsgGDYkWIHGPUD+lczY6dPdjzJJ2jU8lBW58R7m403xNHcgkoyAFexHes20gluir2lyFhk5GVyRXNUXLqd+ErK9pGnaWGnWsW5x5knYHnJrpNE0xEcXMkaqw5RMdPc+9UNG8PpGyyNI0j/wB5utdnaacEt97cAetcUpuWiPRlPQzrwbl49KzYotjEmtO/lSPODxXNaprkFlGzPIoxWVruwXsizqF6kCHLcCuM1DWJr+4NtZq0jd8dAPf0qpJqN/4qvvslhlYs/PJ2UetdlY6HaaTaCC3XOBmSRurn3NbKPJvuYOTqOy2OZisG0+0cyHdPMdzn+lUJ4d+71rf1I5JfHsorLWHMTSevA/xqoze7FOmrWRy8wKuV9DTB1FWL5PLuGPY1Po2lTardCGEZOM16EXdHkSVm0ek/DRCumsTxk121YvhXSzpunpEVw2Oa22qgSNQjNIFp/WkFMYgFJinUlAHBfFXRVu9IF+g+e3PP0rzbw1qYtp/s8jYRzlSex9Pxr3nWdPXVNNntHHEiEV88azpc2kX8trMpUoxAPqPWplG6sEZcruj1TT9RWNQ2av3fiqOOHa0qqB7145Drl/DHsWckdPm5qJtRuJnBlkLDoR7VxfVXfc71jVbVHYeIfHSANHbHex71x6Lf+JLoKznYDyx6CktdLl1G88peEB+Z/QV11jbRWey3gTCr0x1Y+tK0aekdyryq6y2Njw9pdvpVqtvbrgn7zHqx9a3LmFRDtAwoHPvT9B8K6xqKrIlq0Uf9+X5c/Qda6f8A4QS7miK3E6RDH8Clv8KzVKcuho61OGlzyjVCDJtJChu5ONq9zVOa5iSLakchXgbgvFd/qnwxvBK0sdxb3ODkAqUbHv1ziqs3ww1uS0M1ubO4I6xRyfN9ORVewmuhP1iMup5Vqsan94pzg103wuRX1CXIyQKra1ot1YyNb3ltJby/3ZFwT/jW18LrWKO5uWz+8HBB6iuylLSzOGvD3ro9HUADgUEU/wBKaQK2MjVIpKd3pKBXExmkpcUhoGBFcR8RfCH9t2X2u1QfaouTj+IV29NI3DBoEz5hliaGRo3UqynBB7VHiu3+KGgHTNZN1FHthuBu4HANdV8G/hjHqIj8Q6xCHi3ZtYXHDY/jI/kPxpCG+A/hde6xFBeXBezs5UDncv7x/oD0Hua9h0XwZpOiIBaWUSv3kZcufxNb0ECxgDaKsbRUKCWpq5yenQpCDZ/DQUx1FXSoHao3UY6VRFjMnsUfLADPpWbLaNC/mQsySeoreIwc1XmiX8D+lMDntRjtdVgNrrFjFcRHjdt6f4fhXGt4AXQNUGp6NKZ7RxiWBjl0HqD/ABAenX616JcQAjpWZLAY2OCR7ihpbju7WME9M0h4qxdxGOY8Da3THHNQGmI//9k=';
+var BOT = 'bachinskaay_bot';
+var USE_BOT_LINK = true;
+var CHANNEL_POST = 'https://t.me/serafima_bachinskaay';
+/* ============================================= */
+
+/* 15 утверждений, по три на каждую помеху. s: 0 держите крепко, 1 ждете знака,
+   2 хотите и боитесь, 3 силы уходят мимо, 4 чужая цель.
+   re: реплика после ответа «да» или «часто». note: строка над утверждением. */
+var Q = [
+ {s:0,t:'Когда вам что-то очень важно, вы не можете расслабиться, пока это не получите.'},
+ {s:1,t:'Вы откладываете начало до подходящего периода или момента.'},
+ {s:2,t:'Когда вы думаете о большем, чем есть сейчас, внутри становится тревожно.'},
+ {s:3,t:'К вечеру у вас не остается сил на то, чего хочется вам самой.'},
+ {s:4,t:'Вы добивались того, чего хотели, и не чувствовали радости.',re:'Это важный ответ. Запомните его.'},
+ {s:0,t:'Если что-то идет не по плану, вы начинаете делать еще больше.',note:'Треть позади. Дальше будет точнее.'},
+ {s:1,t:'У вас есть идея, к которой вы возвращаетесь больше года, и пока к ней не приступили.',re:'Она возвращается не просто так.'},
+ {s:2,t:'Вы стараетесь сильно не надеяться, чтобы потом не было больно.',re:'Так делают многие, кому однажды уже было больно.'},
+ {s:3,t:'Чужие проблемы и новости занимают в вашей голове больше места, чем ваши планы.'},
+ {s:4,t:'Вам проще сказать, чего от вас ждут, чем чего хотите вы.'},
+ {s:0,t:'Вам трудно отпустить ситуацию и оставить ее без присмотра.',note:'Осталось пять.'},
+ {s:1,t:'Перед важным шагом вам нужно подтверждение, что сейчас пора: знак, прогноз или чей-то совет.'},
+ {s:2,t:'Когда у вас все хорошо, вы ждете, что вот-вот что-то случится.',re:'С этим можно работать, и довольно быстро.'},
+ {s:3,t:'После отдыха вы быстро возвращаетесь в ту же усталость.',re:'Так бывает, когда силы утекают, а дел при этом немного.'},
+ {s:4,t:'Вы часто хотите чего-то, потому что это есть у других.'}
+];
+var SCALE = [['Да, прямо про меня',3],['Часто',2],['Редко',1],['Нет, это не про меня',0]];
+var FORK = {q:'Где это заметнее всего?',a:[['В деньгах','dengi','в деньгах'],['В отношениях','otn','в отношениях'],['В деле и реализации','delo','в деле и реализации'],['В силах и состоянии','sily','в силах и состоянии'],['Везде понемногу','vezde','']]};
+var R = [
+ {k:'a',row:'Держите слишком крепко',t:'Вы держите желание слишком крепко',
+  p:['Вы умеете добиваться, и в этом ваша ловушка. Чем важнее для вас цель, тем сильнее вы сжимаетесь, и тем дальше она отодвигается.','Наверняка вы замечали: то, на что вы махнули рукой, приходило само, а то, над чем бились, стояло на месте.'],
+  lead:'С вами все в порядке. Так работает избыточная важность: когда человек вцепился, у желаемого нет способа к нему прийти.',
+  out:'Все эти ответы про одно: вы не даете желанию дойти своим ходом.',
+  say:'Желание оставляем. Убираем только хватку.',
+  tools:[['Трансерфинг','Снижаем важность: желание остается, уходит напряжение вокруг него.'],['Нумерология','По дате рождения смотрю, откуда у вас привычка все держать самой.'],['Медитация','Учим тело отпускать. Голова соглашается быстрее, чем оно.']],
+  st:{sub:'Проверить, насколько крепко вы держите',a:'Вы заметили, что снова проверяете, считаете и подгоняете.',q:'«А если этого не будет, я справлюсь?»',qs:'Спросите и подождите. Ответ придет из тела раньше, чем из головы.',h3:'Отпустите на вечер',c:'Сделайте одно маленькое действие к желанию и до завтра к нему не возвращайтесь.',why:'Это из трансерфинга. Когда важность падает, сопротивление уходит вместе с ней. Вы ничего не теряете, просто перестаете мешать.'},
+  tech:'Разжать руку',pod:'почему чем сильнее хочешь, тем дальше оно уходит'},
+ {k:'b',row:'Ждете знака',t:'Вы ждете знака, который уже был',
+  p:['Вы хорошо чувствуете время и умеете не лезть напролом. Но ожидание подходящего момента незаметно стало для вас способом не начинать.','Ретроград закончится, начнется что-нибудь еще, и так можно прождать год.'],
+  lead:'Знак обычно выглядит скучно. Это мысль, которая возвращается к вам месяцами, и вы, скорее всего, уже знаете, какая.',
+  out:'Подтверждение, которого вы ждете, давно пришло. Оно и есть та идея, что не отпускает.',
+  say:'Как астролог скажу прямо: периодов, когда нельзя ничего, не бывает.',
+  tools:[['Астрология','Показываю, какое сейчас время на самом деле и чему оно помогает.'],['Нумерология','Считаем ваш личный год: у него своя задача, и ждать под нее ничего не нужно.'],['Психология','Находим, чего вы ждете на самом деле: периода, уверенности или чьего-то разрешения.']],
+  st:{sub:'Начать без подходящего периода',a:'Вы снова подумали: «вот начнется хорошее время, и я возьмусь».',q:'«Мой знак уже был»',qs:'Скажите это себе и вспомните мысль, которая возвращается третий раз.',h3:'Сделайте шаг на пятнадцать минут',c:'Такой, который ни от кого не зависит. Узнать цену, написать одно сообщение, открыть условия.',why:'У каждого времени своя задача, и для маленького шага подходит любое. Астрология нужна, чтобы выбирать, как идти, а идти или нет, решаете вы.'},
+  tech:'Знак уже был',pod:'как понять, что ждать больше нечего, и с чего начать'},
+ {k:'c',row:'Хотите и боитесь',t:'Вы хотите и боитесь одновременно',
+  p:['Желание у вас настоящее, а под ним лежит страх, и он старше желания. Поэтому вы ставите цели поменьше и стараетесь сильно не надеяться.','Голова говорит «хочу», а что-то глубже отвечает «опасно», и побеждает обычно второе.'],
+  lead:'Это защита, которая когда-то вам помогла. Сейчас она охраняет вас от того, чего вы сами просите.',
+  out:'Пока страх не выслушан, он будет тормозить каждое ваше «хочу».',
+  say:'Со страхом бесполезно спорить. С ним можно познакомиться.',
+  tools:[['Гипнотерапия','Доходим до момента, где этот страх появился. Обычно он намного старше нынешней ситуации.'],['Психология','Разбираем, от чего он вас бережет и что ему нужно, чтобы отпустить.'],['Нумерология','По дате рождения видно, где вам дано больше, чем вы себе разрешаете.']],
+  st:{sub:'Выслушать страх вместо спора с ним',a:'Вы подумали о большем, и внутри сжалось.',q:'«От чего ты меня бережешь?»',qs:'Положите ладонь туда, где сжалось, и подождите ответа. Запишите первое, что пришло.',h3:'Назовите очень маленький шаг',c:'Такой, чтобы тело на него не отозвалось. С него и начнете.',why:'Страх живет в подсознании, поэтому уговоры на него не действуют. В гипнотерапии мы с ним разговариваем, и этот вопрос оттуда.'},
+  tech:'Познакомиться со страхом',pod:'откуда берется страх перед большим и как с ним договориться'},
+ {k:'d',row:'Силы уходят мимо',t:'Ваши силы уходят мимо ваших желаний',
+  p:['Хотеть вы умеете, только к вечеру на это ничего не остается. Силы расходятся по чужим делам, новостям, тревогам за всех, и до своего вы добираетесь на остатках.','Отдых тут помогает слабо, потому что устаете вы от утечки, а дел может быть совсем немного.'],
+  lead:'Пока утечка открыта, любое желание будет казаться неподъемным. Дело в ней, а с вами все хорошо.',
+  out:'Сначала закрываем утечку, потом идем к желаниям. В другом порядке не выходит.',
+  say:'Силы идут туда, где внимание. Вернуть его проще, чем кажется.',
+  tools:[['Психология','Находим, куда именно утекает: тревога за других, обида, роль, которая давно жмет.'],['Медитация','Возвращаем внимание в тело. Это пять минут, и к концу дышится по-другому.'],['Астрология','Смотрю ваш личный ритм: когда силы приходят сами, а когда лучше ничего не начинать.']],
+  st:{sub:'Найти, куда уходят силы',a:'Вечер, а на свое сил уже нет.',q:'«На что сегодня ушли мои силы, хотя я ничего для этого не делала?»',qs:'Выпишите три ответа. Обычно в списке чужие дела, новости и тревога за кого-то.',h3:'Выберите одно «нет» на завтра',c:'Что вы не будете читать, обсуждать или брать на себя. Одного хватит.',why:'Мы устаем от того, что держим в голове, намного сильнее, чем от дел. Когда внимание возвращается, силы приходят следом.'},
+  tech:'Вернуть свое',pod:'куда уходят силы и как их вернуть себе'},
+ {k:'e',row:'Идете к чужой цели',t:'Вы идете к чужой цели',
+  p:['Вы способны дойти почти до чего угодно, и доходили. А потом внутри оказывалось пусто. Так бывает, когда желание взято у мамы, у окружения, из ленты.','На чужую цель подсознание сил не выдает, и вы принимаете это за лень.'],
+  lead:'Лени тут нет. Вас просто не пускают туда, куда вам не надо.',
+  out:'На свое желание силы находятся сами. Осталось отыскать его среди чужих.',
+  say:'По дате рождения сразу видно, когда человек годами идет к чужому.',
+  tools:[['Нумерология','Дата рождения показывает, что дано вам от природы и чего от себя требовать не стоит.'],['Психология','Отделяем ваши желания от тех, что достались от близких.'],['Астрология','Смотрю, в какой сфере у вас сейчас настоящее движение, а где вы стараетесь зря.']],
+  st:{sub:'Отличить свое желание от чужого',a:'Вы поймали себя на мысли «надо бы и мне так».',q:'«Если бы никто никогда не узнал, я бы этого хотела?»',qs:'Отвечайте честно, да или нет. Объяснять никому не нужно.',h3:'Запишите одно честное «да»',c:'Одно желание с честным «да» важнее пяти с «надо». Начните с него.',why:'Когда человек идет к чужой цели, цифры в его дате и его жизнь расходятся. Как только он поворачивает к своему, силы появляются без усилий.'},
+  tech:'Чье это желание',pod:'как отличить свое желание от чужого'}
+];
+var CLEAR = {k:'o',t:'Сильной помехи по вашим ответам не видно',
+  p:['Вы умеете хотеть и не цепляться, начинать без долгого ожидания и беречь силы для своего. Так отвечает меньшинство.'],
+  lead:'Если при этом что-то все равно стоит на месте, причина, скорее всего, в самом желании: оно могло измениться, а вы еще идете к старому.',
+  say:'Желания тоже взрослеют. Раз в год их стоит перечитывать.',
+  tools:[['Нумерология','Считаем личный год: возможно, у него сейчас другая задача.'],['Астрология','Смотрю, в какой сфере у вас открыто движение именно сейчас.'],['Психология','Проверяем, ваше ли желание до сих пор.']],
+  st:{sub:'Проверить, не устарело ли желание',a:'Вы думаете о цели и не чувствуете прежнего тепла.',q:'«Когда у меня появилось это желание?»',qs:'Поставьте рядом с каждым из трех главных желаний примерную дату.',h3:'Перечитайте самое старое',c:'Спросите себя, хотите ли вы этого сегодня, или это привычка хотеть.',why:'Мы меняемся быстрее, чем наши списки целей. Когда желание обновлено, оно снова начинает двигаться.'},
+  tech:'',pod:'как получать желаемое спокойно и без надрыва'};
+var GOOD = ['Умеете хотеть и при этом не цепляться','Начинаете, не дожидаясь идеального момента','Разрешаете себе большое','Бережете силы для своего','Слышите, чего хотите сами'];
+var SPH = {dengi:['Деньги','Здесь вы стараетесь сильнее всего, и здесь же сильнее всего буксует.'],otn:['Отношения','Здесь вам труднее всего расслабиться и получить то, чего хочется.'],delo:['Дело и реализация','Здесь у вас больше всего планов и меньше всего движения.'],sily:['Силы и состояние','Здесь вы чувствуете это телом: хочется, а взяться не на что.']};
+/* Блок «Что дальше?». POD_TIME: длительность подкаста на карточке.
+   SHOW_POD = false прячет карточку подкаста, пока выпуски не записаны.
+   CLUB = '' прячет карточку клуба. */
+var SHOW_POD = true, POD_TIME = 'подкаст';
+var CLUB = 'Старт 1 ноября. Первыми о нем узнают подписчики канала.';
+/* Документы. Ссылки те же, что на сайте курса «Вернуться к себе». */
+var DOCS = {
+  policy:'https://disk.yandex.ru/i/4KvI_Y5jIBCUGA',
+  consent:'https://disk.yandex.ru/i/Q3lnXeykiKFxhw',
+  mailing:'https://disk.yandex.ru/i/Ug_7apJsNRkXhQ'
+};
+function doc(k,t){return '<a href="'+DOCS[k]+'" target="_blank" rel="noopener">'+t+'</a>';}
+var DISCLAIM = 'Тест носит информационный и развлекательный характер. Это не психологическая, не психотерапевтическая и не медицинская диагностика, он не ставит диагнозов и не заменяет консультацию психолога, психотерапевта или врача. Нумерология и астрология не относятся к научным методам. Решения на основе результата вы принимаете самостоятельно, автор теста не несет ответственности за их последствия. Если вам сейчас тяжело, обратитесь, пожалуйста, к специалисту очно.';
+var WORDS = ['слабо','умеренно','заметно','сильно'];
+
+var tg = window.Telegram && Telegram.WebApp ? Telegram.WebApp : null;
+if (tg) { try { tg.ready(); tg.expand(); } catch (e) {} }
+var app = document.getElementById('app'), step = -1, ans = [], fork = null;
+var N = Q.length;
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function toTop(){window.scrollTo(0,0);}
+function level(v){return v<=2?0:v<=4?1:v<=6?2:3;}
+
+function intro(){
+  app.innerHTML='<div class="who"><div class="av"><img src="'+AV+'" alt=""></div><b>Серафима Бачинская</b></div>'+
+   '<div class="hero"><span class="badge">Тест · 2 минуты</span>'+
+   '<h1>Что не пускает вас к вашим желаниям?</h1>'+
+   '<p>Узнаете, в каком месте желание у вас застревает и что с этим можно сделать уже сегодня.</p></div>'+
+   '<ul class="checks"><li><i class="ck"></i><span>Что именно стоит между вами и желаемым?</span></li>'+
+   '<li><i class="ck"></i><span>Что видно по вашим ответам?</span></li>'+
+   '<li><i class="ck"></i><span>Какими инструментами я с этим работаю?</span></li>'+
+   '<li><i class="ck"></i><span>Что можно сделать уже сегодня вечером?</span></li></ul>'+
+   '<div class="say"><div class="av"><img src="'+AV+'" alt=""></div><div class="bub"><b>Серафима Бачинская</b>Я работаю с тем, что у человека внутри, и с тем, что дано ему от рождения. В этом тесте первая часть: что происходит у вас внутри.</div></div>'+
+   '<div class="chips"><span>психология</span><span>нумерология</span><span>астрология</span><span>гипнотерапия</span><span>медитации</span></div>'+
+   '<p>Здесь пятнадцать утверждений. Отвечайте сразу, первым, что пришло в голову. Начнете взвешивать каждое слово, и получится про кого-то другого.</p>'+
+   '<p>Правильных ответов тут нет, оценивать вас никто не будет.</p>'+
+   '<button class="btn" id="go">Начать</button>'+
+   '<div class="legal">Нажимая «Начать», вы соглашаетесь с '+doc('policy','Политикой обработки персональных данных')+' и даете '+doc('consent','согласие на их обработку')+'.</div>'+
+   '<div class="foot"><p>'+DISCLAIM+'</p></div>';
+  document.getElementById('go').onclick=function(){step=0;render();};
+}
+function question(){
+  var q=Q[step],h='<div class="bar"><i style="width:'+(step/(N+1)*100)+'%"></i></div>'+
+   '<div class="count">'+(step+1)+' из '+N+'</div>'+
+   (q.note?'<div class="note">'+esc(q.note)+'</div>':'')+
+   '<div class="stmt">'+esc(q.t)+'</div>';
+  SCALE.forEach(function(s,i){h+='<button class="opt'+(ans[step]===s[1]?' on':'')+'" data-v="'+s[1]+'">'+s[0]+'</button>';});
+  h+='<div class="re" id="re"></div>';
+  if(step>0)h+='<button class="back" id="back">Назад</button>';
+  app.innerHTML=h;
+  var locked=false;
+  [].forEach.call(app.querySelectorAll('.opt'),function(b){b.onclick=function(){
+    if(locked)return;locked=true;
+    var v=+b.getAttribute('data-v');ans[step]=v;
+    [].forEach.call(app.querySelectorAll('.opt'),function(x){x.className='opt';});b.className='opt on';
+    var show=q.re&&v>=2;
+    if(show)document.getElementById('re').textContent=q.re;
+    setTimeout(function(){step++;render();},show?1500:170);};});
+  var bk=document.getElementById('back');if(bk)bk.onclick=function(){step--;render();};
+}
+function forkScreen(){
+  var h='<div class="bar"><i style="width:'+(N/(N+1)*100)+'%"></i></div><div class="count">Почти все</div>'+
+   '<div class="stmt" style="min-height:0;margin-bottom:8px">'+esc(FORK.q)+'</div>';
+  FORK.a.forEach(function(a,i){h+='<button class="opt'+(fork===i?' on':'')+'" data-i="'+i+'">'+a[0]+'</button>';});
+  h+='<button class="back" id="back">Назад</button>';
+  app.innerHTML=h;
+  [].forEach.call(app.querySelectorAll('.opt'),function(b){b.onclick=function(){
+    fork=+b.getAttribute('data-i');b.className='opt on';setTimeout(function(){step++;render();},170);};});
+  document.getElementById('back').onclick=function(){step--;render();};
+}
+function sums(){var s=[0,0,0,0,0];Q.forEach(function(q,i){s[q.s]+=ans[i]||0;});return s;}
+function winner(s){
+  var max=Math.max.apply(null,s);if(max<=3)return -1;
+  var best=-1,bt=-1;
+  for(var k=0;k<5;k++){if(s[k]!==max)continue;
+    var t=0;Q.forEach(function(q,i){if(q.s===k&&ans[i]===3)t++;});
+    if(t>bt){bt=t;best=k;}}
+  return best;
+}
+function lower(t){t=t.replace(/\.$/,'');return t.charAt(0).toLowerCase()+t.slice(1);}
+function say(t){return '<div class="say"><div class="av"><img src="'+AV+'" alt=""></div><div class="bub"><b>Серафима Бачинская</b>'+esc(t)+'</div></div>';}
+function result(){
+  var s=sums(),w=winner(s),r=w<0?CLEAR:R[w],pad=function(n){return(n<10?'0':'')+n;};
+  var fk=FORK.a[fork][1];
+  var payload='res_'+r.k+'_'+fk;
+  var link=USE_BOT_LINK?('https://t.me/'+BOT+'?start='+payload):CHANNEL_POST;
+  var h='<div class="who"><div class="av"><img src="'+AV+'" alt=""></div><b>Серафима Бачинская</b></div>'+
+    '<div class="hero"><span class="badge">Ваш результат</span><h1 class="res">'+esc(r.t)+'</h1></div>';
+  r.p.forEach(function(x){h+='<p>'+esc(x)+'</p>';});
+  h+='<div class="lead">'+esc(r.lead)+'</div>';
+  if(w>=0&&SPH[fk])h+='<h3>Где это заметнее всего?</h3><div class="sph"><b>'+SPH[fk][0]+'</b><span>'+SPH[fk][1]+'</span></div>';
+  h+='<h3>Что видно по вашим ответам?</h3>';
+  R.forEach(function(x,k){var l=level(s[k]),d='';for(var i=0;i<4;i++)d+='<i'+(i<=l?' class="f'+(i+1)+'"':'')+'></i>';
+    h+='<div class="sc'+(k===w?' me':'')+'"><div class="n">'+x.row+'</div><div class="l"><div class="seg">'+d+'</div><div class="w">'+WORDS[l]+'</div></div></div>';});
+  h+=say(r.say);
+  var good=[];[0,1,2,3,4].sort(function(a,b){return s[a]-s[b];}).forEach(function(k){if(level(s[k])===0&&good.length<3)good.push(GOOD[k]);});
+  if(good.length){h+='<h3>Что у вас уже работает?</h3>';good.forEach(function(g){h+='<div class="pw"><i class="ck"></i><span>'+g+'</span></div>';});}
+  if(w>=0){
+    var said=[];
+    [3,2].forEach(function(v){Q.forEach(function(q,i){if(q.s===w&&ans[i]===v)said.push(q.t);});});
+    if(said.length>=2){
+      h+='<h3>Почему желание до вас не доходит?</h3><div class="said"><div class="hd">Вы сами отметили в тесте:</div>';
+      said.slice(0,3).forEach(function(t){h+='<div class="it"><i class="ck soft"></i><span>'+esc(lower(t))+'</span></div>';});
+      h+='</div><p>'+esc(r.out)+'</p>';
+    }
+  }
+  h+='<h3>Как я с этим работаю?</h3>';
+  r.tools.forEach(function(t){h+='<div class="tool"><span class="tg">'+t[0]+'</span><div>'+esc(t[1])+'</div></div>';});
+  var st=r.st;
+  h+='<h3>Что можно сделать уже сегодня вечером?</h3><div class="sub">'+esc(st.sub)+'</div>'+
+     '<div class="stp"><div class="no">1</div><div class="bd"><b>Поймайте момент</b><span>'+esc(st.a)+'</span></div></div>'+
+     '<div class="stp"><div class="no">2</div><div class="bd"><b>Спросите себя</b></div></div>'+
+     '<div class="phr"><b>'+esc(st.q)+'</b><span>'+esc(st.qs)+'</span></div>'+
+     '<div class="stp"><div class="no">3</div><div class="bd"><b>'+esc(st.h3)+'</b><span>'+esc(st.c)+'</span></div></div>'+
+     '<h4>Почему это работает?</h4>'+say(st.why);
+  var cards='',tot='';
+  var tname=r.tech?'Техника «'+r.tech+'»':'Пять техник на 5-7 минут';
+  cards+='<div class="ask"><span>'+(r.tech?'Что делать, когда это повторится?':'С чего начать?')+'</span></div>'+
+    '<div class="card"><div class="top"><div class="play fl"></div><div class="ti"><b>'+tname+'</b><i>Файл · 5-7 минут</i></div></div>'+
+    '<div class="cap">'+(r.tech?'Пять шагов под ваш результат. Делается с листом бумаги и ручкой.':'Возьмите ту, что откликнется. Делается с листом бумаги и ручкой.')+'</div></div>';
+  tot+='<div class="pw"><i class="ck"></i><span>'+tname+'</span></div>';
+  if(SHOW_POD){cards+='<div class="ask"><span>Почему так выходит именно у меня?</span></div>'+
+    '<div class="card"><div class="top"><div class="play au"></div><div class="ti"><b>Подкаст Серафимы</b><i>Серафима Бачинская</i></div></div>'+
+    '<div class="wave"><div class="w"></div><span>'+POD_TIME+'</span></div>'+
+    '<div class="cap">Рассказываю, '+esc(r.pod)+'. Можно слушать по дороге.</div></div>';
+    tot+='<div class="pw"><i class="ck"></i><span>Подкаст Серафимы</span></div>';}
+  if(CLUB){cards+='<div class="ask"><span>Можно ли этому научиться?</span></div>'+
+    '<div class="card"><div class="top"><div class="play cl"></div><div class="ti"><b>Закрытый клуб Серафимы</b><i>'+CLUB+'</i></div></div></div>';
+    tot+='<div class="pw"><i class="ck"></i><span>Приглашение в закрытый клуб</span></div>';}
+  var cta=r.tech?(SHOW_POD?'Забрать технику и подкаст':'Забрать технику'):(SHOW_POD?'Забрать файл и подкаст':'Забрать файл');
+  h+='<h3>Что дальше?</h3><div class="lines">'+(w>=0?'<p>Вы узнали, что вас не пускает.</p><p>После этого обычно остаются три вопроса.</p><p>На каждый у меня есть ответ.</p>':'<p>Помехи не видно, а вопросы все равно остаются.</p><p>На каждый у меня есть ответ.</p>')+'</div>'+
+     cards+'<div class="all">Все это ждет вас в моем канале.</div>'+
+     '<a class="btn" id="get" href="'+link+'">'+cta+' →</a>'+
+     '<div class="small">Бесплатно. Откроется телеграм.</div>'+
+     '<div class="total"><b>Что вы получите в канале?</b>'+tot+'</div>'+
+     '<a class="btn" id="get2" href="'+link+'">'+cta+' →</a>'+
+     '<div class="legal">Нажимая кнопку, вы переходите в телеграм-бот и даете '+doc('mailing','согласие на получение сообщений')+'. Отписаться можно в любой момент.</div>'+
+     '<button class="btn ghost" id="again">Пройти заново</button>'+
+     '<div class="foot"><p>'+DISCLAIM+'</p><p>'+doc('policy','Политика обработки персональных данных')+' · '+doc('consent','Согласие на обработку персональных данных')+' · '+doc('mailing','Согласие на рассылку')+'</p><p>© Серафима Бачинская</p></div>';
+  app.innerHTML=h;
+  ['get','get2'].forEach(function(id){document.getElementById(id).onclick=function(e){
+    if(tg&&tg.openTelegramLink){e.preventDefault();try{tg.openTelegramLink(link);}catch(x){location.href=link;}}};});
+  document.getElementById('again').onclick=function(){step=-1;ans=[];fork=null;render();};
+}
+function render(){
+  if(step<0)intro();else if(step<N)question();else if(step===N)forkScreen();else result();
+  toTop();
+}
+render();
+</script>
+</body>
+</html>
